@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="120" viewBox="0 0 80 120">
+    <rect x="20" y="30" width="40" height="70" fill="#ff9800"/> <!-- Orange -->
+    <rect x="25" y="10" width="10" height="20" fill="#4caf50"/> <!-- Green -->
+    <rect x="45" y="10" width="10" height="20" fill="#2196f3"/> <!-- Blue -->
+    <rect x="30" y="75" width="20" height="5" fill="#9c27b0"/> <!-- Purple -->
+</svg>
