@@ -1,78 +1,78 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import { NgClass, NgForOf } from '@angular/common';
+import { GenericGaugeComponent } from './genericJauge/generic-gauge.component';
 
 @Component({
     selector: 'app-jauges',
     standalone: true,
-    imports: [FormsModule, NgClass],
+    imports: [FormsModule, NgClass, GenericGaugeComponent, NgForOf],
     templateUrl: './jauges.component.html',
     styleUrls: ['./jauges.component.scss'],
 })
 export class JaugesComponent implements OnInit, OnDestroy {
-    imcValue: number = 18.5;
-    tempValue: number = 36.6;
-    pulseValue: number = 60;
+    // Configurations for human and ocean gauges
+    gaugeConfigurations = {
+        human: [
+            { label: 'IMC', value: 18.5, min: 10, max: 50, unit: '' },
+            { label: 'Température', value: 36.6, min: 28, max: 41.1, unit: '°C' },
+            { label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm' },
+        ],
+        ocean: [
+            { label: 'CO2', value: 400, min: 200, max: 500, unit: 'ppm' },
+            { label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L' },
+            { label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt' },
+        ],
+    };
 
-    clues: string[] = [
-        'A healthy BMI (18.5–24.9) is important for overall well-being.',
-        'A normal temperature (36.1°C - 37.2°C) is crucial for your body to function properly.',
-        'A pulse rate between 60 and 100 beats per minute is normal for most adults.',
-        'Extreme temperature (either too high or too low) can be harmful to your health.',
-        'Overweight (BMI above 25) can increase the risk of many health issues.',
-        'Low pulse rate (under 50 bpm) could be a sign of bradycardia.'
-    ];
-
-    currentClue: string = this.clues[0];
+    selectedType: 'human' | 'ocean' = 'human';
+    gauges: any[] = []; // Currently displayed gauges
+    clues: string[] = []; // Clues for the selected type
+    currentClue: string = '';
     clueInterval: any;
 
     ngOnInit(): void {
-        // Change clue every 5 seconds
+        this.switchType(this.selectedType);
+        this.startClueRotation();
+    }
+
+    ngOnDestroy(): void {
+        this.stopClueRotation();
+    }
+
+    switchType(type: 'human' | 'ocean'): void {
+        this.selectedType = type;
+        this.gauges = this.gaugeConfigurations[type];
+        this.updateClues(type);
+    }
+
+    updateClues(type: 'human' | 'ocean'): void {
+        if (type === 'human') {
+            this.clues = [
+                'A healthy BMI (18.5–24.9) is important for overall well-being.',
+                'A normal temperature (36.1°C - 37.2°C) is crucial for your body.',
+                'A pulse rate between 60 and 100 bpm is normal for adults.',
+            ];
+        } else if (type === 'ocean') {
+            this.clues = [
+                'CO2 levels should be under control to prevent ocean acidification.',
+                'Oxygen levels below 5 mg/L can harm marine life.',
+                'Optimal salinity (NaCl) is essential for ocean ecosystems.',
+            ];
+        }
+        this.currentClue = this.clues[0];
+    }
+
+    startClueRotation(): void {
         this.clueInterval = setInterval(() => {
             const randomIndex = Math.floor(Math.random() * this.clues.length);
             this.currentClue = this.clues[randomIndex];
         }, 5000);
     }
 
-    ngOnDestroy(): void {
-        // Clear interval when the component is destroyed
+    stopClueRotation(): void {
         if (this.clueInterval) {
             clearInterval(this.clueInterval);
-        }
-    }
-
-    calculateRotation(value: number): string {
-        if (value >= 0 && value <= 100) {
-            const rotation = value * 1.8 - 45;
-            return `rotate(${rotation}deg)`;
-        }
-        return 'rotate(-45deg)';
-    }
-
-    getGaugePercentage(value: number): string {
-        return `${value}%`;
-    }
-
-    calculateCopyRotation(value: number): string {
-        const rotation = value * 1.8;
-        return `translate(-50%, -50%) rotate(${rotation}deg)`;
-    }
-
-    updateGauge(value: number, type: string): void {
-        if (value < 0 || value > 100) {
-            return;  // If the value is invalid, don't update
-        }
-
-        switch (type) {
-            case 'imc':
-                this.imcValue = value;
-                break;
-            case 'temp':
-                this.tempValue = value;
-                break;
-            case 'pulse':
-                this.pulseValue = value;
-                break;
         }
     }
 
@@ -126,7 +126,6 @@ export class JaugesComponent implements OnInit, OnDestroy {
             pulseMood = 'very sad';
         }
 
-        // Mix moods to get a more nuanced result
         const combinedMoods = [imcMood, tempMood, pulseMood];
 
         const happyCount = combinedMoods.filter(mood => mood === 'happy').length;
@@ -134,7 +133,6 @@ export class JaugesComponent implements OnInit, OnDestroy {
         const verySadCount = combinedMoods.filter(mood => mood === 'very sad').length;
         const neutralCount = combinedMoods.filter(mood => mood === 'neutral').length;
 
-        // Define composite mood based on the mix of health indicators
         if (verySadCount >= 2) {
             return '😞'; // Mostly very sad
         } else if (sadCount >= 2) {
@@ -154,11 +152,9 @@ export class JaugesComponent implements OnInit, OnDestroy {
         }
     }
 
-
     getBodyClass(imc: number, temp: number, pulse: number): string {
         let bodyClass = '';
 
-        // Determine body mood based on IMC, temperature, and pulse
         if (imc < 16 || temp < 32 || pulse < 40) {
             bodyClass += ' very-sad';
         } else if (imc < 18.5 || temp < 36.1 || pulse < 50) {
@@ -169,15 +165,20 @@ export class JaugesComponent implements OnInit, OnDestroy {
             bodyClass += ' neutral';
         }
 
-        // Add posture class based on values, for example:
         if (pulse < 50) {
-            bodyClass += ' sitting'; // Low pulse can represent sitting posture
+            bodyClass += ' sitting';
         } else if (imc > 30) {
-            bodyClass += ' laying'; // High IMC can represent laying posture
+            bodyClass += ' laying';
         } else {
-            bodyClass += ' standing'; // Default posture
+            bodyClass += ' standing';
         }
 
         return bodyClass;
+    }
+
+    updateGauge(value: number, gauge: any): void {
+        if (value >= gauge.min && value <= gauge.max) {
+            gauge.value = value;
+        }
     }
 }

@@ -1,95 +1,40 @@
 <div class="flex-gauge-container">
-    <div class="smiley-container">
-        <div class="smiley">
-            <span [ngClass]="getMood(imcValue, tempValue, pulseValue)">
-                {{ getMood(imcValue, tempValue, pulseValue) }}
-            </span>
-        </div>
-        <div class="body" [ngClass]="getBodyClass(imcValue, tempValue, pulseValue)"></div>
+    <!-- Toggle Button -->
+    <div class="toggle-container">
+        <button (click)="switchType('human')" [class.active]="selectedType === 'human'">Human</button>
+        <button (click)="switchType('ocean')" [class.active]="selectedType === 'ocean'">Ocean</button>
     </div>
-    <div>
-        <div class="gauges">
-            <!-- Jauge : IMC -->
-            <div class="gauge-container">
-                <div class="gauge-holder">
-                    <div class="circle-mask">
-                        <div class="circle">
-                            <div class="circle-inner" [style.transform]="calculateRotation(imcValue)"></div>
-                        </div>
-                    </div>
-                    <!-- Display float value for IMC -->
-                    <div class="percentage">{{ imcValue.toFixed(2) }}</div>
-                    <!-- Label for IMC gauge -->
-                    <div class="gauge-label">IMC</div>
-                    <input
-                        type="number"
-                        class="text-box"
-                        [(ngModel)]="imcValue"
-                        (ngModelChange)="updateGauge(imcValue, 'imc')"
-                        placeholder="Enter IMC (e.g., 18.5)"
-                        min="10"
-                        max="50"
-                        step="0.1"
-                    />
-                    <div class="gauge-copy" [style.transform]="calculateCopyRotation(imcValue)"></div>
-                </div>
-            </div>
 
-            <!-- Jauge : Température -->
-            <div class="gauge-container">
-                <div class="gauge-holder">
-                    <div class="circle-mask">
-                        <div class="circle">
-                            <div class="circle-inner" [style.transform]="calculateRotation(tempValue)"></div>
-                        </div>
-                    </div>
-                    <!-- Display float value for Température -->
-                    <div class="percentage">{{ tempValue.toFixed(2) }}</div>
-                    <!-- Label for Temperature gauge -->
-                    <div class="gauge-label">Température</div>
-                    <input
-                        type="number"
-                        class="text-box"
-                        [(ngModel)]="tempValue"
-                        (ngModelChange)="updateGauge(tempValue, 'temp')"
-                        placeholder="Enter Temp (e.g., 36.6)"
-                        min="28"
-                        max="41.1"
-                        step="0.1"
-                    />
-                    <div class="gauge-copy" [style.transform]="calculateCopyRotation(tempValue)"></div>
-                </div>
-            </div>
+    <!-- Smiley and Body -->
+    <div class="smiley-container">
+        <!-- Smiley -->
+        <div class="smiley">
+    <span [ngClass]="getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
+      {{ getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) }}
+    </span>
+        </div>
 
-            <!-- Jauge : Pouls -->
-            <div class="gauge-container">
-                <div class="gauge-holder">
-                    <div class="circle-mask">
-                        <div class="circle">
-                            <div class="circle-inner" [style.transform]="calculateRotation(pulseValue)"></div>
-                        </div>
-                    </div>
-                    <!-- Display float value for Pouls -->
-                    <div class="percentage">{{ pulseValue.toFixed(2) }}</div>
-                    <!-- Label for Pulse gauge -->
-                    <div class="gauge-label">Pouls</div>
-                    <input
-                        type="number"
-                        class="text-box"
-                        [(ngModel)]="pulseValue"
-                        (ngModelChange)="updateGauge(pulseValue, 'pulse')"
-                        placeholder="Enter Pulse (e.g., 72.5)"
-                        min="30"
-                        max="200"
-                        step="1"
-                    />
-                    <div class="gauge-copy" [style.transform]="calculateCopyRotation(pulseValue)"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Clue Section -->
-        <div class="clue-container">
-            <p>{{ currentClue }}</p>
-        </div>
+        <!-- Body -->
+        <div class="body" [ngClass]="getBodyClass(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)"></div>
+    </div>
+
+
+
+    <!-- Gauges -->
+    <div class="gauges">
+        <app-generic-gauge
+            *ngFor="let gauge of gauges"
+            [label]="gauge.label"
+            [value]="gauge.value"
+            [min]="gauge.min"
+            [max]="gauge.max"
+            [unit]="gauge.unit"
+            (valueChange)="updateGauge($event, gauge)"
+        ></app-generic-gauge>
+    </div>
+
+    <!-- Clue Section -->
+    <div class="clue-container">
+        <p>{{ currentClue }}</p>
     </div>
 </div>
