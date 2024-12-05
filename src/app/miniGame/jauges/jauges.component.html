@@ -1,1 +1,68 @@
-<p>jauges works!</p>
+<div class="gauges">
+    <!-- Jauge : IMC -->
+    <div class="gauge-container">
+      <div class="guage-holder">
+        <div class="circle-mask">
+          <div class="circle">
+            <div class="circle-inner" [style.transform]="calculateRotation(imcValue)"></div>
+          </div>
+        </div>
+        <div class="percentage">{{ getGaugePercentage(imcValue) }}</div>
+        <input
+          type="number"
+          class="text-box"
+          [(ngModel)]="imcValue"
+          (ngModelChange)="updateGauge(imcValue, 'imc')"
+          placeholder="IMC"
+          min="0"
+          max="100"
+        />
+        <div class="gauge-copy" [style.transform]="calculateCopyRotation(imcValue)"></div>
+      </div>
+    </div>
+  
+    <!-- Jauge : Température -->
+    <div class="gauge-container">
+      <div class="guage-holder">
+        <div class="circle-mask">
+          <div class="circle">
+            <div class="circle-inner" [style.transform]="calculateRotation(tempValue)"></div>
+          </div>
+        </div>
+        <div class="percentage">{{ getGaugePercentage(tempValue) }}</div>
+        <input
+          type="number"
+          class="text-box"
+          [(ngModel)]="tempValue"
+          (ngModelChange)="updateGauge(tempValue, 'temp')"
+          placeholder="Température"
+          min="0"
+          max="100"
+        />
+        <div class="gauge-copy" [style.transform]="calculateCopyRotation(tempValue)"></div>
+      </div>
+    </div>
+  
+    <!-- Jauge : Pouls -->
+    <div class="gauge-container">
+      <div class="guage-holder">
+        <div class="circle-mask">
+          <div class="circle">
+            <div class="circle-inner" [style.transform]="calculateRotation(pulseValue)"></div>
+          </div>
+        </div>
+        <div class="percentage">{{ getGaugePercentage(pulseValue) }}</div>
+        <input
+          type="number"
+          class="text-box"
+          [(ngModel)]="pulseValue"
+          (ngModelChange)="updateGauge(pulseValue, 'pulse')"
+          placeholder="Pouls"
+          min="0"
+          max="100"
+        />
+        <div class="gauge-copy" [style.transform]="calculateCopyRotation(pulseValue)"></div>
+      </div>
+    </div>
+  </div>
+  
