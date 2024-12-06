@@ -11,7 +11,6 @@ import {GenericGaugeComponent} from './genericJauge/generic-gauge.component';
     styleUrls: ['./jauges.component.scss'],
 })
 export class JaugesComponent implements OnInit, OnDestroy {
-    // Configurations for human and ocean gauges
     gaugeConfigurations = {
         human: [
             {label: 'IMC', value: 18.5, min: 10, max: 50, unit: ''},
@@ -19,20 +18,20 @@ export class JaugesComponent implements OnInit, OnDestroy {
             {label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm'},
         ],
         ocean: [
-            {label: 'CO2', value: 200, min: 200, max: 500, unit: 'ppm'},  // Happy CO2 level
-            {label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L'},         // Happy O2 level
-            {label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt'},       // Optimal salinity (NaCl)
+            {label: 'CO2', value: 200, min: 200, max: 500, unit: 'ppm'},
+            {label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L'},
+            {label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt'},
         ],
     };
 
     selectedType: 'human' | 'ocean' = 'human';
-    gauges: any[] = []; // Currently displayed gauges
-    clues: string[] = []; // Clues for the selected type
+    gauges: any[] = [];
+    clues: string[] = [];
     currentClue: string = '';
     clueInterval: any;
 
     ngOnInit(): void {
-        this.randomizeGaugeValues();  // Randomize gauge values when component initializes
+        this.randomizeGaugeValues();
         this.switchType(this.selectedType);
         this.startClueRotation();
     }
@@ -43,22 +42,20 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
     // Helper function to get a random value between min and max
     getRandomValue(min: number, max: number): number {
-        return parseFloat((Math.random() * (max - min) + min).toFixed(2));  // Limit to 2 decimal places
+        return parseFloat((Math.random() * (max - min) + min).toFixed(2));
     }
 
     // Randomize values for all gauges (human and ocean)
     randomizeGaugeValues(): void {
-        // Randomize human gauges
         this.gaugeConfigurations.human.forEach(gauge => {
             gauge.value = this.getRandomValue(gauge.min, gauge.max);
         });
 
-        // Randomize ocean gauges
         this.gaugeConfigurations.ocean.forEach(gauge => {
             gauge.value = this.getRandomValue(gauge.min, gauge.max);
         });
     }
-    
+
     switchType(type: 'human' | 'ocean'): void {
         this.selectedType = type;
         this.gauges = this.gaugeConfigurations[type];
@@ -154,48 +151,48 @@ export class JaugesComponent implements OnInit, OnDestroy {
         const neutralCount = combinedMoods.filter(mood => mood === 'neutral').length;
 
         if (verySadCount >= 2) {
-            return '😞'; // Mostly very sad
+            return '😞';
         } else if (sadCount >= 2) {
-            return '😞'; // Mostly sad
+            return '😞';
         } else if (happyCount === 3) {
-            return '😊'; // All happy
+            return '😊';
         } else if (happyCount === 2 && neutralCount === 1) {
-            return '😊'; // Mostly happy, with a neutral factor
+            return '😊';
         } else if (neutralCount === 3) {
-            return '😐'; // All neutral
+            return '😐';
         } else if (sadCount === 1 && neutralCount === 2) {
-            return '😐'; // One sad, two neutral
+            return '😐';
         } else if (neutralCount === 2 && happyCount === 1) {
-            return '😐'; // One happy, two neutral
+            return '😐';
         } else {
-            return '😞'; // Default fallback for mixed sad-neutral combinations
+            return '😞';
         }
     }
 
     getMoodOcean(co2: number, o2: number, nacl: number): string {
         let co2Mood = '';
         if (co2 < 250) {
-            co2Mood = 'happy';  // Low CO2 levels are good
+            co2Mood = 'happy';
         } else if (co2 >= 250 && co2 < 400) {
-            co2Mood = 'neutral';  // Acceptable CO2 levels
+            co2Mood = 'neutral';
         } else if (co2 >= 400) {
-            co2Mood = 'very sad';  // High CO2 levels cause ocean acidification
+            co2Mood = 'very sad';
         }
 
         let o2Mood = '';
         if (o2 > 7) {
-            o2Mood = 'happy';  // High oxygen levels are healthy for marine life
+            o2Mood = 'happy';
         } else if (o2 >= 5 && o2 <= 7) {
-            o2Mood = 'neutral';  // Adequate oxygen
+            o2Mood = 'neutral';
         } else if (o2 < 5) {
-            o2Mood = 'very sad';  // Low oxygen levels harm marine life
+            o2Mood = 'very sad';
         }
 
         let naclMood = '';
         if (nacl >= 30 && nacl <= 40) {
-            naclMood = 'happy';  // Optimal salinity for marine ecosystems
+            naclMood = 'happy';
         } else if (nacl < 30 || nacl > 40) {
-            naclMood = 'sad';  // Extreme salinity values are harmful
+            naclMood = 'sad';
         }
 
         const combinedMoods = [co2Mood, o2Mood, naclMood];
@@ -205,20 +202,19 @@ export class JaugesComponent implements OnInit, OnDestroy {
         const verySadCount = combinedMoods.filter(mood => mood === 'very sad').length;
         const neutralCount = combinedMoods.filter(mood => mood === 'neutral').length;
 
-        // Return mood based on the majority
         if (verySadCount >= 2) {
-            return '🌊😞'; // Ocean-themed very sad
+            return '🌊😞';
         } else if (sadCount >= 2) {
-            return '🌊😞'; // Ocean-themed sad
+            return '🌊😞';
         } else if (happyCount === 3) {
-            return '🌊😊'; // Ocean-themed happy
+            return '🌊😊';
         } else if (happyCount === 2 && neutralCount === 1) {
-            return '🌊😊'; // Ocean-themed mostly happy
+            return '🌊😊';
         } else if (neutralCount === 3) {
-            return '🌊😐'; // Ocean-themed neutral
+            return '🌊😐';
         }
 
-        return '🌊😞'; // Default fallback for mixed sad-neutral combinations
+        return '🌊😞';
     }
 
 
@@ -249,24 +245,22 @@ export class JaugesComponent implements OnInit, OnDestroy {
     getBodyClassOcean(co2: number, o2: number, nacl: number): string {
         let bodyClass = '';
 
-        // Define body class based on CO2, O2, and NaCl levels
         if (co2 > 400 || o2 < 5 || nacl < 30 || nacl > 40) {
-            bodyClass += ' very-sad';  // Very poor conditions for marine life
+            bodyClass += ' very-sad';
         } else if ((co2 >= 250 && co2 <= 400) || (o2 >= 5 && o2 <= 7) || (nacl >= 20 && nacl < 30)) {
-            bodyClass += ' sad';  // Moderate conditions for marine life
+            bodyClass += ' sad';
         } else if (co2 < 250 && o2 > 7 && nacl >= 30 && nacl <= 40) {
-            bodyClass += ' happy';  // Ideal conditions for ocean ecosystems
+            bodyClass += ' happy';
         } else {
-            bodyClass += ' neutral';  // Default if none of the above conditions match
+            bodyClass += ' neutral';
         }
 
-        // Additional conditions for how marine life interacts based on NaCl or O2 values
         if (o2 < 5) {
-            bodyClass += ' endangered';  // High danger if O2 is too low
+            bodyClass += ' endangered';
         }
 
         if (co2 > 400) {
-            bodyClass += ' acidified';  // Too high CO2 levels cause ocean acidification
+            bodyClass += ' acidified';
         }
 
         return bodyClass;
@@ -281,15 +275,15 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
     backgroundImage() {
         const html = document.getElementsByTagName('html')[0];
-        const body = document.body; // Get the body element
+        const body = document.body;
         if (this.selectedType === 'ocean') {
             html.style.backgroundImage = "url('jauge/ocean_background.jpg')";
-            body.classList.add('ocean');  // Add ocean-specific class
-            body.classList.remove('human');  // Remove human-specific class
+            body.classList.add('ocean');
+            body.classList.remove('human');
         } else {
             html.style.backgroundImage = "url('jauge/human_background.jpg')";
-            body.classList.add('human');  // Add human-specific class
-            body.classList.remove('ocean');  // Remove ocean-specific class
+            body.classList.add('human');
+            body.classList.remove('ocean');
         }
 
         html.style.backgroundPosition = 'center center';
