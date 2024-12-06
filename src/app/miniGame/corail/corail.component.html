@@ -1,4 +1,4 @@
-@if (isOceanMode == "ocean") {
+@if (isOceanMode) {
     <div class="container">
         <div class="subcontainer">
             <img
@@ -8,11 +8,11 @@
             />
             <mat-button-toggle-group
                 (change)="toggleMode($event)"
-                [(ngModel)]="isOceanMode"
+                [(ngModel)]="chosenOption"
                 aria-label="Font Style"
             >
-                <mat-button-toggle value="ocean">Océan</mat-button-toggle>
-                <mat-button-toggle value="artere">Humain</mat-button-toggle>
+                <mat-button-toggle value="corail">Océan</mat-button-toggle>
+                <mat-button-toggle value="humain">Humain</mat-button-toggle>
             </mat-button-toggle-group>
             <h1>Nourrissez le et faites le grandir !</h1>
             <div class="image-corail">
@@ -61,7 +61,9 @@
                                 nbTotalQuestions
                             }}
                         </p>
-                        <button (click)="restartGame()">Recommencer</button>
+                        <button (click)="goToMenu()" routerLink="/">
+                            Revenir au menu
+                        </button>
                     </div>
                 </div>
             } @else if (nbCurrentQuestionCorail === nbTotalCorailQuestions) {
@@ -84,12 +86,11 @@
             />
             <mat-button-toggle-group
                 (change)="toggleMode($event)"
-                [(ngModel)]="isOceanMode"
-                class="toggle"
+                [(ngModel)]="chosenOption"
                 aria-label="Font Style"
             >
-                <mat-button-toggle value="ocean">Océan</mat-button-toggle>
-                <mat-button-toggle value="artere">Humain</mat-button-toggle>
+                <mat-button-toggle value="corail">Océan</mat-button-toggle>
+                <mat-button-toggle value="humain">Humain</mat-button-toggle>
             </mat-button-toggle-group>
             <h1>Nourrissez le et faites le évoluez sainement !</h1>
             <div class="image-corail">
@@ -138,10 +139,12 @@
                                 nbTotalQuestions
                             }}
                         </p>
-                        <button (click)="restartGame()">Recommencer</button>
+                        <button (click)="goToMenu()" routerLink="/">
+                            Revenir au menu
+                        </button>
                     </div>
                 </div>
-            } @else if (nbCurrentQuestionHuman === nbTotalCorailQuestions) {
+            } @else if (nbCurrentQuestionHuman === nbTotalHumanQuestions) {
                 <div class="pop-up-section">
                     <p>
                         Vous avez terminé la section Humain ! Rendez-vous dans

@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { GameService } from '../../game.service';
 
 @Component({
     selector: 'app-corail',
@@ -15,8 +17,12 @@ export class CorailComponent {
     score = 0;
     displayedAnswers: { image: string; label: string; isCorrect: boolean }[] =
         [];
+    readonly dialog: MatDialog = inject(MatDialog);
 
-    public constructor(private router: Router) {}
+    public constructor(
+        private router: Router,
+        private gameService: GameService,
+    ) {}
 
     ngOnInit() {
         this.getRandomAnswers();
@@ -139,12 +145,19 @@ export class CorailComponent {
     nbCurrentQuestionCorail = 0;
     nbCurrentQuestionHuman = 0;
     currentQuestionIndex = 0;
-    isOceanMode: string = 'ocean';
+    isOceanMode = true;
+    chosenOption: string = 'corail';
 
     toggleMode(event: any) {
-        this.isOceanMode = event.value;
+        if (event.value === 'corail') {
+            this.isOceanMode = true;
+        } else {
+            this.isOceanMode = false;
+        }
+
         this.getRandomAnswers();
     }
+
     getRandomAnswers() {
         if (this.isOceanMode) {
             const correctAnswers = this.questions[
@@ -231,11 +244,8 @@ export class CorailComponent {
         this.router.navigate(['/']);
     }
 
-    restartGame() {
-        this.score = 0;
-        this.nbCurrentQuestionCorail = 0;
-        this.nbCurrentQuestionHuman = 0;
-        this.currentQuestionIndex = 0;
-        this.getRandomAnswers();
+    goToMenu() {
+        this.gameService.incrementCompletedGames();
+        this.router.navigate(['/']);
     }
 }
