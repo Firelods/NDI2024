@@ -203,7 +203,6 @@ ul {
 }
 
 .clue-container {
-    margin-top: 20px;
     padding: 10px;
     text-align: center;
     font-size: 16px;
@@ -219,8 +218,7 @@ ul {
 .flex-gauge-container {
     display: flex;
     flex-direction: column;
-    max-height: 98vh;
-    height: 98vh;
+    height: 100vh;
     justify-content: space-between;
 }
 

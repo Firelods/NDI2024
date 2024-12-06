@@ -1,0 +1,20 @@
+<div class="gauge-container">
+    <div class="gauge-holder">
+        <div class="circle-mask">
+            <div class="circle">
+                <div class="circle-inner" [style.transform]="calculateRotation()"></div>
+            </div>
+        </div>
+        <div class="percentage">{{ value }} {{ unit }}</div>
+        <div class="gauge-label">{{ label }}</div>
+        <input
+            type="number"
+            class="text-box"
+            [(ngModel)]="value"
+            (ngModelChange)="onValueChange($event)"
+            [placeholder]="'Enter ' + label"
+            [min]="min"
+            [max]="max"
+        />
+    </div>
+</div>

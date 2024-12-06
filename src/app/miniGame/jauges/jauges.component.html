@@ -1,1 +1,44 @@
-<p>jauges works!</p>
+<div class="flex-gauge-container">
+    <!-- Toggle Button -->
+    <div class="toggle-container">
+        <button (click)="switchType('human')" [class.active]="selectedType === 'human'">Human</button>
+        <button (click)="switchType('ocean')" [class.active]="selectedType === 'ocean'">Ocean</button>
+    </div>
+
+    <!-- Smiley and Body -->
+    <div class="smiley-container">
+        <div class="smiley">
+            <span [ngClass]="selectedType === 'human' ?
+                                getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) :
+                                getMoodOcean(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
+                {{ selectedType === 'human' ?
+                getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) :
+                getMoodOcean(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) }}
+            </span>
+        </div>
+
+        <div class="body"
+             [ngClass]="selectedType === 'human' ?
+                getBodyClass(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) :
+                getBodyClassOcean(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
+        </div>
+    </div>
+
+    <!-- Gauges -->
+    <div class="gauges">
+        <app-generic-gauge
+            *ngFor="let gauge of gauges"
+            [label]="gauge.label"
+            [value]="gauge.value"
+            [min]="gauge.min"
+            [max]="gauge.max"
+            [unit]="gauge.unit"
+            (valueChange)="updateGauge($event, gauge)"
+        ></app-generic-gauge>
+    </div>
+
+    <!-- Clue Section -->
+    <div class="clue-container">
+        <p>{{ currentClue }}</p>
+    </div>
+</div>
