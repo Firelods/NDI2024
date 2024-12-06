@@ -1,1 +1,38 @@
-<p>corail works!</p>
+<div class="container">
+    <img class="retour" src="common/arrow-left.svg" />
+    <h1>Nourrissez le et faites le grandir !</h1>
+    <div class="image-corail">
+        @if(this.score < 2){
+        <img class="img" src="corail/corail_1.png" />
+        } @else if(this.score < 3){
+        <img class="img" src="corail/corail_2.png" />
+        } @else if(this.score < 4){
+        <img class="img" src="corail/corail_3.png" />
+        } @else{
+        <img class="img" src="corail/corail_4.png" />
+        }
+    </div>
+    <div class="suivi-reponse">
+        <h3>{{ this.nbCurrentQuestion }}/{{ this.nbTotalQuestions }}</h3>
+    </div>
+    <div class="choix-container">
+        @for(image of this.displayedAnswers; track $index){
+        <div class="choix" (click)="selectAnswer(image)">
+            <img class="response-img" src="{{ image.image }}" />
+        </div>
+        }
+    </div>
+
+    <div class="score">
+        <h3>Score : {{ this.score }}</h3>
+    </div>
+    @if (nbCurrentQuestion === nbTotalQuestions) {
+    <div class="popup-overlay">
+        <div class="popup">
+            <h2>Quiz Terminé !</h2>
+            <p>Votre score final est : {{ score }}/{{ nbTotalQuestions }}</p>
+            <button (click)="restartGame()">Recommencer</button>
+        </div>
+    </div>
+    }
+</div>
