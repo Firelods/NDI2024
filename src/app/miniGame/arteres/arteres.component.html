@@ -1,10 +1,16 @@
 <div class="header">
-    <mat-slide-toggle [checked]="isOceanMode" (change)="toggleMode()">{{
-        isOceanMode ? "Océan" : "Artères"
-    }}</mat-slide-toggle>
+    <img src="common/arrow-left.svg" alt="arrow left" routerLink="/" />
+    <mat-button-toggle-group
+        (change)="toggleMode($event)"
+        [(ngModel)]="isOceanMode"
+        aria-label="Font Style"
+    >
+        <mat-button-toggle value="ocean">Océan</mat-button-toggle>
+        <mat-button-toggle value="artere">Artères</mat-button-toggle>
+    </mat-button-toggle-group>
     <span>{{ score }} / {{ totalScore }}</span>
 </div>
-@if (!isOceanMode) {
+@if (isOceanMode == "artere") {
     <div class="artery-container" cdkDropListGroup>
         <!-- Zone artères -->
         <div

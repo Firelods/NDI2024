@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class GameService {
-    completedGames = 0;
+    completedGames = 2;
 
     constructor() {}
 

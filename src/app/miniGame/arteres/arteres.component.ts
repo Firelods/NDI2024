@@ -10,7 +10,7 @@ import {
     DragDropModule,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
     MatDialogTitle,
@@ -19,8 +19,12 @@ import {
     MatDialogClose,
     MatDialog,
 } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { GameService } from '../../game.service';
+import {
+    MatButtonToggle,
+    MatButtonToggleModule,
+} from '@angular/material/button-toggle';
 
 @Component({
     selector: 'dialog-elements-example-dialog',
@@ -41,10 +45,12 @@ export class DialogElementsExampleDialog {}
     selector: 'app-arteres',
     standalone: true,
     imports: [
-        MatSlideToggleModule,
+        MatButtonToggleModule,
+        ReactiveFormsModule,
         DragDropModule,
         CommonModule,
         FormsModule,
+        RouterModule,
         CdkDropList,
         CdkDrag,
     ],
@@ -71,7 +77,7 @@ export class ArteresComponent {
     wasteOceanInBin = [];
     readonly dialog: MatDialog = inject(MatDialog);
     wastesInBin = [];
-    isOceanMode = false;
+    isOceanMode: string = 'ocean';
     score = 0;
     totalScore = this.wasteOcean.length + this.wastes.length;
 
@@ -79,8 +85,8 @@ export class ArteresComponent {
         private router: Router,
         private gameService: GameService,
     ) {}
-    toggleMode() {
-        this.isOceanMode = !this.isOceanMode;
+    toggleMode(event: any) {
+        this.isOceanMode = event.value;
     }
 
     drop(event: any) {

@@ -1,4 +1,4 @@
-@if (isOceanMode) {
+@if (isOceanMode == "ocean") {
     <div class="container">
         <div class="subcontainer">
             <img
@@ -6,12 +6,14 @@
                 src="common/arrow-left.svg"
                 (click)="goToHome()"
             />
-            <mat-slide-toggle
-                id="toggle"
-                [checked]="isOceanMode"
-                (change)="toggleMode()"
-                >{{ isOceanMode ? "Corail" : "Humain" }}</mat-slide-toggle
+            <mat-button-toggle-group
+                (change)="toggleMode($event)"
+                [(ngModel)]="isOceanMode"
+                aria-label="Font Style"
             >
+                <mat-button-toggle value="ocean">Océan</mat-button-toggle>
+                <mat-button-toggle value="artere">Humain</mat-button-toggle>
+            </mat-button-toggle-group>
             <h1>Nourrissez le et faites le grandir !</h1>
             <div class="image-corail">
                 @if (this.scoreCorail < 2) {
@@ -80,12 +82,15 @@
                 src="common/arrow-left.svg"
                 (click)="goToHome()"
             />
-            <mat-slide-toggle
-                id="toggle"
-                [checked]="isOceanMode"
-                (change)="toggleMode()"
-                >{{ isOceanMode ? "Corail" : "Humain" }}</mat-slide-toggle
+            <mat-button-toggle-group
+                (change)="toggleMode($event)"
+                [(ngModel)]="isOceanMode"
+                class="toggle"
+                aria-label="Font Style"
             >
+                <mat-button-toggle value="ocean">Océan</mat-button-toggle>
+                <mat-button-toggle value="artere">Humain</mat-button-toggle>
+            </mat-button-toggle-group>
             <h1>Nourrissez le et faites le évoluez sainement !</h1>
             <div class="image-corail">
                 @if (this.scoreHuman < 2) {

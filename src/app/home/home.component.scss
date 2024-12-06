@@ -1,5 +1,6 @@
 .ocean-navigation {
     position: relative;
+    overflow: auto;
     width: 100vw;
     height: 100vh;
     background: url('@public/ocean-background.jpg') no-repeat center center;
@@ -8,21 +9,27 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    overflow: hidden;
     color: white;
     font-family: 'Poppins', sans-serif;
 }
 
 .logoNDI {
     width: 50%;
-    max-width: 400px;
+    max-width: 300px;
     margin-top: 20px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
     transition: transform 0.3s ease;
+    margin-bottom: 3em;
 }
 
 .logoNDI:hover {
     transform: scale(1.1);
+}
+
+h1 {
+    padding: 0.5em;
+    font-size: 1.5em;
+
 }
 
 nav {
@@ -35,16 +42,19 @@ ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3em;
+    align-items: center
 }
 
 .game-link {
-    position: absolute;
     text-decoration: none;
     color: #fff;
     font-size: 1.2rem;
     font-weight: bold;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    background: rgba(0, 0, 0, 0.6);
+    background: #1badadce;
     padding: 12px 18px;
     border-radius: 8px;
     transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
@@ -114,4 +124,15 @@ ul {
 
 .inter {
     background: url('@public/oceanInter.webp') no-repeat center center;
+}
+
+.flexBox {
+    display: flex;
+    backdrop-filter: brightness(0.5);
+    height: 100%;
+    border-radius: 5px 5px 0 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
 }

@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-corail',
     standalone: true,
-    imports: [MatSlideToggleModule],
+    imports: [MatSlideToggleModule, MatButtonToggleModule, FormsModule],
     templateUrl: './corail.component.html',
     styleUrl: './corail.component.scss',
 })
@@ -137,10 +139,10 @@ export class CorailComponent {
     nbCurrentQuestionCorail = 0;
     nbCurrentQuestionHuman = 0;
     currentQuestionIndex = 0;
-    isOceanMode = true;
+    isOceanMode: string = 'ocean';
 
-    toggleMode() {
-        this.isOceanMode = !this.isOceanMode;
+    toggleMode(event: any) {
+        this.isOceanMode = event.value;
         this.getRandomAnswers();
     }
     getRandomAnswers() {
