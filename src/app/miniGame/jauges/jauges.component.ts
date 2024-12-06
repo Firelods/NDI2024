@@ -1,8 +1,9 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {NgClass, NgForOf, NgStyle} from '@angular/common';
-import {GenericGaugeComponent} from './genericJauge/generic-gauge.component';
-import {Router} from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgClass, NgForOf, NgStyle } from '@angular/common';
+import { GenericGaugeComponent } from './genericJauge/generic-gauge.component';
+import { Router } from '@angular/router';
+import { GameService } from '../../game.service';
 
 @Component({
     selector: 'app-jauges',
@@ -14,14 +15,20 @@ import {Router} from '@angular/router';
 export class JaugesComponent implements OnInit, OnDestroy {
     gaugeConfigurations = {
         human: [
-            {label: 'IMC', value: 18.5, min: 10, max: 50, unit: ''},
-            {label: 'Température', value: 36.6, min: 28, max: 41.1, unit: '°C'},
-            {label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm'},
+            { label: 'IMC', value: 18.5, min: 10, max: 50, unit: '' },
+            {
+                label: 'Température',
+                value: 36.6,
+                min: 28,
+                max: 41.1,
+                unit: '°C',
+            },
+            { label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm' },
         ],
         ocean: [
-            {label: 'CO2', value: 200, min: 200, max: 500, unit: 'ppm'},
-            {label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L'},
-            {label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt'},
+            { label: 'CO2', value: 200, min: 200, max: 500, unit: 'ppm' },
+            { label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L' },
+            { label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt' },
         ],
     };
 
@@ -35,8 +42,10 @@ export class JaugesComponent implements OnInit, OnDestroy {
     oceanBodyClassIsHappy = false;
     humanBodyClassIsHappy = false;
 
-    constructor(private router: Router) {
-    }
+    constructor(
+        private router: Router,
+        private gameService: GameService,
+    ) {}
 
     ngOnInit(): void {
         this.randomizeGaugeValues();
@@ -55,11 +64,11 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
     // Randomize values for all gauges (human and ocean)
     randomizeGaugeValues(): void {
-        this.gaugeConfigurations.human.forEach(gauge => {
+        this.gaugeConfigurations.human.forEach((gauge) => {
             gauge.value = this.getRandomValue(gauge.min, gauge.max);
         });
 
-        this.gaugeConfigurations.ocean.forEach(gauge => {
+        this.gaugeConfigurations.ocean.forEach((gauge) => {
             gauge.value = this.getRandomValue(gauge.min, gauge.max);
         });
     }
@@ -153,10 +162,16 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
         const combinedMoods = [imcMood, tempMood, pulseMood];
 
-        const happyCount = combinedMoods.filter(mood => mood === 'happy').length;
-        const sadCount = combinedMoods.filter(mood => mood === 'sad').length;
-        const verySadCount = combinedMoods.filter(mood => mood === 'very sad').length;
-        const neutralCount = combinedMoods.filter(mood => mood === 'neutral').length;
+        const happyCount = combinedMoods.filter(
+            (mood) => mood === 'happy',
+        ).length;
+        const sadCount = combinedMoods.filter((mood) => mood === 'sad').length;
+        const verySadCount = combinedMoods.filter(
+            (mood) => mood === 'very sad',
+        ).length;
+        const neutralCount = combinedMoods.filter(
+            (mood) => mood === 'neutral',
+        ).length;
 
         if (verySadCount >= 2) {
             return '😞';
@@ -207,10 +222,16 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
         const combinedMoods = [co2Mood, o2Mood, naclMood];
 
-        const happyCount = combinedMoods.filter(mood => mood === 'happy').length;
-        const sadCount = combinedMoods.filter(mood => mood === 'sad').length;
-        const verySadCount = combinedMoods.filter(mood => mood === 'very sad').length;
-        const neutralCount = combinedMoods.filter(mood => mood === 'neutral').length;
+        const happyCount = combinedMoods.filter(
+            (mood) => mood === 'happy',
+        ).length;
+        const sadCount = combinedMoods.filter((mood) => mood === 'sad').length;
+        const verySadCount = combinedMoods.filter(
+            (mood) => mood === 'very sad',
+        ).length;
+        const neutralCount = combinedMoods.filter(
+            (mood) => mood === 'neutral',
+        ).length;
 
         if (verySadCount >= 2) {
             return '🌊😞';
@@ -229,7 +250,6 @@ export class JaugesComponent implements OnInit, OnDestroy {
         return '🌊😞';
     }
 
-
     getBodyClass(imc: number, temp: number, pulse: number): string {
         let bodyClass = '';
 
@@ -237,7 +257,14 @@ export class JaugesComponent implements OnInit, OnDestroy {
             bodyClass += ' very-sad';
         } else if (imc < 18.5 || temp < 36.1 || pulse < 50) {
             bodyClass += ' sad';
-        } else if (imc >= 18.5 && imc <= 24.9 && temp >= 36.1 && temp <= 37.2 && pulse >= 50 && pulse <= 70) {
+        } else if (
+            imc >= 18.5 &&
+            imc <= 24.9 &&
+            temp >= 36.1 &&
+            temp <= 37.2 &&
+            pulse >= 50 &&
+            pulse <= 70
+        ) {
             bodyClass += ' happy';
             this.humanBodyClassIsHappy = true;
         } else {
@@ -260,7 +287,11 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
         if (co2 > 400 || o2 < 5 || nacl < 30 || nacl > 40) {
             bodyClass += ' very-sad';
-        } else if ((co2 >= 250 && co2 <= 400) || (o2 >= 5 && o2 <= 7) || (nacl >= 20 && nacl < 30)) {
+        } else if (
+            (co2 >= 250 && co2 <= 400) ||
+            (o2 >= 5 && o2 <= 7) ||
+            (nacl >= 20 && nacl < 30)
+        ) {
             bodyClass += ' sad';
         } else if (co2 < 250 && o2 > 7 && nacl >= 30 && nacl <= 40) {
             bodyClass += ' happy';
@@ -279,7 +310,6 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
         return bodyClass;
     }
-
 
     updateGauge(value: number, gauge: any): void {
         if (value >= gauge.min && value <= gauge.max) {
@@ -307,6 +337,7 @@ export class JaugesComponent implements OnInit, OnDestroy {
     }
 
     goToHome() {
+        this.gameService.incrementCompletedGames();
         this.router.navigate(['/']);
     }
 
