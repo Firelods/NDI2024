@@ -1,1 +1,149 @@
-<p>corail works!</p>
+@if (isOceanMode) {
+    <div class="container">
+        <div class="subcontainer">
+            <img
+                class="retour"
+                src="common/arrow-left.svg"
+                (click)="goToHome()"
+            />
+            <mat-slide-toggle
+                id="toggle"
+                [checked]="isOceanMode"
+                (change)="toggleMode()"
+                >{{ isOceanMode ? "Corail" : "Humain" }}</mat-slide-toggle
+            >
+            <h1>Nourrissez le et faites le grandir !</h1>
+            <div class="image-corail">
+                @if (this.scoreCorail < 2) {
+                    <img class="img" src="corail/corail_1.png" />
+                } @else if (this.scoreCorail < 3) {
+                    <img class="img" src="corail/corail_2.png" />
+                } @else if (this.scoreCorail < 4) {
+                    <img class="img" src="corail/corail_3.png" />
+                } @else {
+                    <img class="img" src="corail/corail_4.png" />
+                }
+            </div>
+            <div class="suivi-reponse">
+                <h3>
+                    {{
+                        this.nbCurrentQuestionCorail +
+                            this.nbCurrentQuestionHuman
+                    }}/{{ this.nbTotalQuestions }}
+                </h3>
+            </div>
+            <div class="choix-container">
+                @for (image of this.displayedAnswers; track $index) {
+                    <button
+                        class="choix-item"
+                        [disabled]="this.nbCurrentQuestionCorail === 5"
+                        (click)="selectAnswer(image)"
+                    >
+                        <img class="response-img" src="{{ image.image }}" />
+                    </button>
+                }
+            </div>
+
+            <div class="score">
+                <h3>Score : {{ this.score }}</h3>
+            </div>
+            @if (
+                nbCurrentQuestionCorail + nbCurrentQuestionHuman ===
+                nbTotalQuestions
+            ) {
+                <div class="popup-overlay">
+                    <div class="popup">
+                        <h2>Quiz Terminé !</h2>
+                        <p>
+                            Votre score final est : {{ score }}/{{
+                                nbTotalQuestions
+                            }}
+                        </p>
+                        <button (click)="restartGame()">Recommencer</button>
+                    </div>
+                </div>
+            } @else if (nbCurrentQuestionCorail === nbTotalCorailQuestions) {
+                <div class="pop-up-section">
+                    <p>
+                        Vous avez terminé la section corail ! Rendez-vous dans
+                        Humain pour la suite
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+} @else {
+    <div class="container-humain">
+        <div class="subcontainer">
+            <img
+                class="retour"
+                src="common/arrow-left.svg"
+                (click)="goToHome()"
+            />
+            <mat-slide-toggle
+                id="toggle"
+                [checked]="isOceanMode"
+                (change)="toggleMode()"
+                >{{ isOceanMode ? "Corail" : "Humain" }}</mat-slide-toggle
+            >
+            <h1>Nourrissez le et faites le évoluez sainement !</h1>
+            <div class="image-corail">
+                @if (this.scoreHuman < 2) {
+                    <img class="img" src="corail/homme_1.png" />
+                } @else if (this.scoreHuman < 3) {
+                    <img class="img" src="corail/homme_2.png" />
+                } @else if (this.scoreHuman < 4) {
+                    <img class="img" src="corail/homme_3.png" />
+                } @else {
+                    <img class="img" src="corail/homme_4.png" />
+                }
+            </div>
+            <div class="suivi-reponse">
+                <h3>
+                    {{
+                        this.nbCurrentQuestionHuman +
+                            this.nbCurrentQuestionCorail
+                    }}/{{ this.nbTotalQuestions }}
+                </h3>
+            </div>
+            <div class="choix-container">
+                @for (image of this.displayedAnswers; track $index) {
+                    <button
+                        class="choix-item"
+                        [disabled]="this.nbCurrentQuestionHuman === 5"
+                        (click)="selectAnswer(image)"
+                    >
+                        <img class="response-img" src="{{ image.image }}" />
+                    </button>
+                }
+            </div>
+
+            <div class="score">
+                <h3>Score : {{ this.score }}</h3>
+            </div>
+            @if (
+                nbCurrentQuestionCorail + nbCurrentQuestionHuman ===
+                nbTotalQuestions
+            ) {
+                <div class="popup-overlay">
+                    <div class="popup">
+                        <h2>Quiz Terminé !</h2>
+                        <p>
+                            Votre score final est : {{ score }}/{{
+                                nbTotalQuestions
+                            }}
+                        </p>
+                        <button (click)="restartGame()">Recommencer</button>
+                    </div>
+                </div>
+            } @else if (nbCurrentQuestionHuman === nbTotalCorailQuestions) {
+                <div class="pop-up-section">
+                    <p>
+                        Vous avez terminé la section Humain ! Rendez-vous dans
+                        Corail pour la suite...
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+}
