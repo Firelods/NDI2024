@@ -19,9 +19,9 @@ export class JaugesComponent implements OnInit, OnDestroy {
             {label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm'},
         ],
         ocean: [
-            {label: 'CO2', value: 400, min: 200, max: 500, unit: 'ppm'},
-            {label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L'},
-            {label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt'},
+            {label: 'CO2', value: 200, min: 200, max: 500, unit: 'ppm'},  // Happy CO2 level
+            {label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L'},         // Happy O2 level
+            {label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt'},       // Optimal salinity (NaCl)
         ],
     };
 
@@ -32,6 +32,7 @@ export class JaugesComponent implements OnInit, OnDestroy {
     clueInterval: any;
 
     ngOnInit(): void {
+        this.randomizeGaugeValues();  // Randomize gauge values when component initializes
         this.switchType(this.selectedType);
         this.startClueRotation();
     }
@@ -40,6 +41,24 @@ export class JaugesComponent implements OnInit, OnDestroy {
         this.stopClueRotation();
     }
 
+    // Helper function to get a random value between min and max
+    getRandomValue(min: number, max: number): number {
+        return parseFloat((Math.random() * (max - min) + min).toFixed(2));  // Limit to 2 decimal places
+    }
+
+    // Randomize values for all gauges (human and ocean)
+    randomizeGaugeValues(): void {
+        // Randomize human gauges
+        this.gaugeConfigurations.human.forEach(gauge => {
+            gauge.value = this.getRandomValue(gauge.min, gauge.max);
+        });
+
+        // Randomize ocean gauges
+        this.gaugeConfigurations.ocean.forEach(gauge => {
+            gauge.value = this.getRandomValue(gauge.min, gauge.max);
+        });
+    }
+    
     switchType(type: 'human' | 'ocean'): void {
         this.selectedType = type;
         this.gauges = this.gaugeConfigurations[type];
@@ -153,6 +172,56 @@ export class JaugesComponent implements OnInit, OnDestroy {
         }
     }
 
+    getMoodOcean(co2: number, o2: number, nacl: number): string {
+        let co2Mood = '';
+        if (co2 < 250) {
+            co2Mood = 'happy';  // Low CO2 levels are good
+        } else if (co2 >= 250 && co2 < 400) {
+            co2Mood = 'neutral';  // Acceptable CO2 levels
+        } else if (co2 >= 400) {
+            co2Mood = 'very sad';  // High CO2 levels cause ocean acidification
+        }
+
+        let o2Mood = '';
+        if (o2 > 7) {
+            o2Mood = 'happy';  // High oxygen levels are healthy for marine life
+        } else if (o2 >= 5 && o2 <= 7) {
+            o2Mood = 'neutral';  // Adequate oxygen
+        } else if (o2 < 5) {
+            o2Mood = 'very sad';  // Low oxygen levels harm marine life
+        }
+
+        let naclMood = '';
+        if (nacl >= 30 && nacl <= 40) {
+            naclMood = 'happy';  // Optimal salinity for marine ecosystems
+        } else if (nacl < 30 || nacl > 40) {
+            naclMood = 'sad';  // Extreme salinity values are harmful
+        }
+
+        const combinedMoods = [co2Mood, o2Mood, naclMood];
+
+        const happyCount = combinedMoods.filter(mood => mood === 'happy').length;
+        const sadCount = combinedMoods.filter(mood => mood === 'sad').length;
+        const verySadCount = combinedMoods.filter(mood => mood === 'very sad').length;
+        const neutralCount = combinedMoods.filter(mood => mood === 'neutral').length;
+
+        // Return mood based on the majority
+        if (verySadCount >= 2) {
+            return '🌊😞'; // Ocean-themed very sad
+        } else if (sadCount >= 2) {
+            return '🌊😞'; // Ocean-themed sad
+        } else if (happyCount === 3) {
+            return '🌊😊'; // Ocean-themed happy
+        } else if (happyCount === 2 && neutralCount === 1) {
+            return '🌊😊'; // Ocean-themed mostly happy
+        } else if (neutralCount === 3) {
+            return '🌊😐'; // Ocean-themed neutral
+        }
+
+        return '🌊😞'; // Default fallback for mixed sad-neutral combinations
+    }
+
+
     getBodyClass(imc: number, temp: number, pulse: number): string {
         let bodyClass = '';
 
@@ -176,6 +245,33 @@ export class JaugesComponent implements OnInit, OnDestroy {
 
         return bodyClass;
     }
+
+    getBodyClassOcean(co2: number, o2: number, nacl: number): string {
+        let bodyClass = '';
+
+        // Define body class based on CO2, O2, and NaCl levels
+        if (co2 > 400 || o2 < 5 || nacl < 30 || nacl > 40) {
+            bodyClass += ' very-sad';  // Very poor conditions for marine life
+        } else if ((co2 >= 250 && co2 <= 400) || (o2 >= 5 && o2 <= 7) || (nacl >= 20 && nacl < 30)) {
+            bodyClass += ' sad';  // Moderate conditions for marine life
+        } else if (co2 < 250 && o2 > 7 && nacl >= 30 && nacl <= 40) {
+            bodyClass += ' happy';  // Ideal conditions for ocean ecosystems
+        } else {
+            bodyClass += ' neutral';  // Default if none of the above conditions match
+        }
+
+        // Additional conditions for how marine life interacts based on NaCl or O2 values
+        if (o2 < 5) {
+            bodyClass += ' endangered';  // High danger if O2 is too low
+        }
+
+        if (co2 > 400) {
+            bodyClass += ' acidified';  // Too high CO2 levels cause ocean acidification
+        }
+
+        return bodyClass;
+    }
+
 
     updateGauge(value: number, gauge: any): void {
         if (value >= gauge.min && value <= gauge.max) {

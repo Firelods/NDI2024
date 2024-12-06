@@ -8,12 +8,21 @@
     <!-- Smiley and Body -->
     <div class="smiley-container">
         <div class="smiley">
-            <span [ngClass]="getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
-                {{ getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) }}
+            <!-- Update the mood and body class dynamically based on the selectedType -->
+            <span [ngClass]="selectedType === 'human' ?
+                                getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) :
+                                getMoodOcean(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
+                {{ selectedType === 'human' ?
+                getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) :
+                getMoodOcean(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) }}
             </span>
         </div>
 
-        <div class="body" [ngClass]="getBodyClass(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)"></div>
+        <div class="body"
+             [ngClass]="selectedType === 'human' ?
+                getBodyClass(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) :
+                getBodyClassOcean(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
+        </div>
     </div>
 
     <!-- Gauges -->
