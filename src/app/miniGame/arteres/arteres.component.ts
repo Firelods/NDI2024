@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -11,6 +11,32 @@ import {
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialog,
+} from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { GameService } from '../../game.service';
+
+@Component({
+    selector: 'dialog-elements-example-dialog',
+    templateUrl: 'dialog-element.html',
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatButtonModule,
+    ],
+    standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DialogElementsExampleDialog {}
+
 @Component({
     selector: 'app-arteres',
     standalone: true,
@@ -43,38 +69,55 @@ export class ArteresComponent {
         { id: 12, x: 100, y: 475 },
     ];
     wasteOceanInBin = [];
-
+    readonly dialog: MatDialog = inject(MatDialog);
     wastesInBin = [];
     isOceanMode = false;
+    score = 0;
+    totalScore = this.wasteOcean.length + this.wastes.length;
 
+    constructor(
+        private router: Router,
+        private gameService: GameService,
+    ) {}
     toggleMode() {
         this.isOceanMode = !this.isOceanMode;
     }
-    onDragEnd(event: CdkDragEnd, waste: any) {
-        // Mise à jour des coordonnées
-        const { x, y } = event.source.getFreeDragPosition();
-        waste.x = x;
-        waste.y = y;
-        console.log('dragEnd', event, waste);
-    }
-    onClean(event: any) {
-        console.log('cleaned', event);
-        const waste = event.item.data;
-        this.wastes = this.wastes.filter((w) => w.id !== waste.id);
-    }
 
     drop(event: any) {
-        console.log('dropped', event);
+        const container = event.container.element.nativeElement;
+        const containerRect = container.getBoundingClientRect();
         const waste = event.item.data;
-        // modify the waste object which is in the wastes array to put the coordinate of drop position
+
         const { x, y } = event.dropPoint;
-        waste.x = x - 60;
-        waste.y = y - 60;
+        waste.x = x - containerRect.left - 60; // Ajustement de 60px si nécessaire
+        waste.y = y - containerRect.top - 60;
+    }
+
+    openDialog() {
+        const dialogRef = this.dialog.open(DialogElementsExampleDialog);
+        dialogRef.afterClosed().subscribe((result) => {
+            console.log('The dialog was closed');
+            this.router.navigate(['/']);
+            this.gameService.incrementCompletedGames();
+        });
     }
 
     onDock(event: any) {
-        console.log('docked', event);
         const waste = event.item.data;
+        this.score += 1;
+        this.checkIfWin();
         this.wasteOcean = this.wasteOcean.filter((w) => w.id !== waste.id);
+    }
+    onClean(event: any) {
+        const waste = event.item.data;
+        this.score += 1;
+        this.checkIfWin();
+        this.wastes = this.wastes.filter((w) => w.id !== waste.id);
+    }
+
+    checkIfWin() {
+        if (this.score === this.totalScore) {
+            this.openDialog();
+        }
     }
 }
