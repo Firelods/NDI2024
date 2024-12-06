@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgClass, NgForOf, NgStyle} from '@angular/common';
 import {GenericGaugeComponent} from './genericJauge/generic-gauge.component';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-jauges',
@@ -29,6 +30,13 @@ export class JaugesComponent implements OnInit, OnDestroy {
     clues: string[] = [];
     currentClue: string = '';
     clueInterval: any;
+    oceanIsHappy = false;
+    humanIsHappy = false;
+    oceanBodyClassIsHappy = false;
+    humanBodyClassIsHappy = false;
+
+    constructor(private router: Router) {
+    }
 
     ngOnInit(): void {
         this.randomizeGaugeValues();
@@ -66,15 +74,15 @@ export class JaugesComponent implements OnInit, OnDestroy {
     updateClues(type: 'human' | 'ocean'): void {
         if (type === 'human') {
             this.clues = [
-                'A healthy BMI (18.5–24.9) is important for overall well-being.',
-                'A normal temperature (36.1°C - 37.2°C) is crucial for your body.',
-                'A pulse rate between 60 and 100 bpm is normal for adults.',
+                'A healthy BMI (18.5–24.9) is important for overall well-being. Very low or very high BMI values indicate severe health concerns.',
+                'A normal body temperature lies between 36.1°C and 37.2°C. Too low indicates hypothermia, while too high might be feverish.',
+                'A pulse rate between 50 and 70 bpm is ideal. Lower than 50 might indicate bradycardia, while above 100 is a sign of tachycardia.',
             ];
         } else if (type === 'ocean') {
             this.clues = [
-                'CO2 levels should be under control to prevent ocean acidification.',
-                'Oxygen levels below 5 mg/L can harm marine life.',
-                'Optimal salinity (NaCl) is essential for ocean ecosystems.',
+                'CO2 levels under 250 ppm are optimal for ocean health. Above 400 ppm, the ocean becomes acidified, which harms marine life.',
+                'Oxygen levels above 7 mg/L are crucial for marine ecosystems. Below 5 mg/L, it becomes hypoxic and endangers aquatic species.',
+                'The salinity (NaCl) range of 30-40 ppt is ideal for marine balance. Values outside this range disrupt ecosystems.',
             ];
         }
         this.currentClue = this.clues[0];
@@ -155,8 +163,10 @@ export class JaugesComponent implements OnInit, OnDestroy {
         } else if (sadCount >= 2) {
             return '😞';
         } else if (happyCount === 3) {
+            this.humanIsHappy = true;
             return '😊';
         } else if (happyCount === 2 && neutralCount === 1) {
+            this.humanIsHappy = true;
             return '😊';
         } else if (neutralCount === 3) {
             return '😐';
@@ -207,8 +217,10 @@ export class JaugesComponent implements OnInit, OnDestroy {
         } else if (sadCount >= 2) {
             return '🌊😞';
         } else if (happyCount === 3) {
+            this.oceanIsHappy = true;
             return '🌊😊';
         } else if (happyCount === 2 && neutralCount === 1) {
+            this.oceanIsHappy = true;
             return '🌊😊';
         } else if (neutralCount === 3) {
             return '🌊😐';
@@ -227,6 +239,7 @@ export class JaugesComponent implements OnInit, OnDestroy {
             bodyClass += ' sad';
         } else if (imc >= 18.5 && imc <= 24.9 && temp >= 36.1 && temp <= 37.2 && pulse >= 50 && pulse <= 70) {
             bodyClass += ' happy';
+            this.humanBodyClassIsHappy = true;
         } else {
             bodyClass += ' neutral';
         }
@@ -251,6 +264,7 @@ export class JaugesComponent implements OnInit, OnDestroy {
             bodyClass += ' sad';
         } else if (co2 < 250 && o2 > 7 && nacl >= 30 && nacl <= 40) {
             bodyClass += ' happy';
+            this.oceanBodyClassIsHappy = true;
         } else {
             bodyClass += ' neutral';
         }
@@ -292,4 +306,16 @@ export class JaugesComponent implements OnInit, OnDestroy {
         html.style.backgroundAttachment = 'fixed';
     }
 
+    goToHome() {
+        this.router.navigate(['/']);
+    }
+
+    restartGame() {
+        this.oceanIsHappy = false;
+        this.humanIsHappy = false;
+        this.oceanBodyClassIsHappy = false;
+        this.humanBodyClassIsHappy = false;
+        this.randomizeGaugeValues();
+        this.switchType(this.selectedType);
+    }
 }
