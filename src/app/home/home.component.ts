@@ -18,4 +18,16 @@ import { MaboulComponent } from '../miniGame/maboul/maboul.component';
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss',
 })
-export class HomeComponent {}
+export class HomeComponent {
+    completedGames = 0;
+
+    markGameCompleted() {
+        this.completedGames++;
+    }
+
+    get oceanClass() {
+        if (this.completedGames === 4) return 'clean';
+        if (this.completedGames >= 2) return 'mid-clean';
+        return 'dirty';
+    }
+}
