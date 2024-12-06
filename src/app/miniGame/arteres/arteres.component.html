@@ -1,7 +1,9 @@
-<mat-slide-toggle [checked]="isOceanMode" (change)="toggleMode()">{{
-    isOceanMode ? "Océan" : "Artères"
-}}</mat-slide-toggle>
-
+<div class="header">
+    <mat-slide-toggle [checked]="isOceanMode" (change)="toggleMode()">{{
+        isOceanMode ? "Océan" : "Artères"
+    }}</mat-slide-toggle>
+    <span>{{ score }} / {{ totalScore }}</span>
+</div>
 @if (!isOceanMode) {
     <div class="artery-container" cdkDropListGroup>
         <!-- Zone artères -->
@@ -13,15 +15,16 @@
             [cdkDropListData]="wastes"
             cdkDropListSortingDisabled="true"
             [cdkDropListConnectedTo]="[dropList]"
-            (cdkDropListDropped)="drop($event)">
+            (cdkDropListDropped)="drop($event)"
+        >
             @for (waste of wastes; track $index) {
                 <div
                     class="waste"
                     cdkDrag
                     [cdkDragData]="waste"
-                    cdkDragBoundary=".artery"
                     [style.left.px]="waste.x"
-                    [style.top.px]="waste.y">
+                    [style.top.px]="waste.y"
+                >
                     <img class="caillau" src="caillau.png" alt="caillau" />
                 </div>
             }
@@ -33,9 +36,11 @@
             class="trash-bin"
             id="drop-list"
             #dropList="cdkDropList"
+            cdkDropListSortingDisabled="true"
             [cdkDropListData]="wastesInBin"
             [cdkDropListConnectedTo]="[artery]"
-            (cdkDropListDropped)="onClean($event)">
+            (cdkDropListDropped)="onClean($event)"
+        >
             ♻️ Glisse ici pour nettoyer
         </div>
     </div>
@@ -50,14 +55,16 @@
             [cdkDropListData]="wastes"
             cdkDropListSortingDisabled="true"
             [cdkDropListConnectedTo]="[dockList]"
-            (cdkDropListDropped)="drop($event)">
+            (cdkDropListDropped)="drop($event)"
+        >
             @for (waste of wasteOcean; track $index) {
                 <div
                     class="waste"
                     cdkDrag
                     [cdkDragData]="waste"
                     [style.left.px]="waste.x"
-                    [style.top.px]="waste.y">
+                    [style.top.px]="waste.y"
+                >
                     <img class="bottle" src="bottle.png" alt="bottle" />
                 </div>
             }
@@ -71,7 +78,8 @@
             #dockList="cdkDropList"
             [cdkDropListData]="wasteOceanInBin"
             [cdkDropListConnectedTo]="[ocean]"
-            (cdkDropListDropped)="onDock($event)">
+            (cdkDropListDropped)="onDock($event)"
+        >
             ♻️ Glisse ici pour nettoyer
         </div>
     </div>
