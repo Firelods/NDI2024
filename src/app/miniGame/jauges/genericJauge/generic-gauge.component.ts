@@ -16,6 +16,7 @@ export class GenericGaugeComponent {
     @Input() min!: number;
     @Input() max!: number;
     @Input() unit!: string;
+    @Input() disabled: boolean = false;
 
     @Output() valueChange = new EventEmitter<number>();
 

@@ -1,4 +1,10 @@
 <div class="flex-gauge-container">
+    <img
+        class="retour"
+        src="common/arrow-left.svg"
+        (click)="goToHome()"
+    />
+
     <!-- Toggle Button -->
     <div class="toggle-container">
         <button (click)="switchType('human')" [class.active]="selectedType === 'human'">Human</button>
@@ -33,6 +39,7 @@
             [min]="gauge.min"
             [max]="gauge.max"
             [unit]="gauge.unit"
+            [disabled]="(selectedType === 'human' && humanIsHappy && humanBodyClassIsHappy) || (selectedType === 'ocean' && oceanIsHappy && oceanBodyClassIsHappy)"
             (valueChange)="updateGauge($event, gauge)"
         ></app-generic-gauge>
     </div>
@@ -41,4 +48,34 @@
     <div class="clue-container">
         <p>{{ currentClue }}</p>
     </div>
+    @if (!oceanIsHappy && humanIsHappy && !oceanBodyClassIsHappy && humanBodyClassIsHappy && selectedType === 'human') {
+        <div class="pop-up-section">
+            <p>
+                Vous avez terminé la section Humain ! Rendez-vous dans
+                Océan pour la suite...
+            </p>
+        </div>
+    }
+    @if (oceanIsHappy && !humanIsHappy && oceanBodyClassIsHappy && !humanBodyClassIsHappy && selectedType === 'ocean') {
+        <div class="pop-up-section">
+            <p>
+                Vous avez terminé la section Océan ! Rendez-vous dans
+                Human pour la suite...
+            </p>
+        </div>
+    }
+    @if (oceanIsHappy && humanIsHappy && oceanBodyClassIsHappy && humanBodyClassIsHappy) {
+        <div class="popup-overlay">
+            <div class="popup">
+                <h2>Vous avez trouvé les bons niveaux de jauges !</h2>
+                <p>
+                    Félictation ! Vous pouvez passer à la suite...
+                </p>
+                <div style="display: flex; flex-direction: row; justify-content: space-between">
+                    <button (click)="goToHome()">Page d'accueil</button>
+                    <button (click)="restartGame()">Recommencer</button>
+                </div>
+            </div>
+        </div>
+    }
 </div>
