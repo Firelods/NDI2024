@@ -220,7 +220,8 @@ ul {
 .flex-gauge-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    max-height: 98vh;
+    height: 98vh;
     justify-content: space-between;
 }
 

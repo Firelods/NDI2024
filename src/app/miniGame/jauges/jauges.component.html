@@ -7,18 +7,14 @@
 
     <!-- Smiley and Body -->
     <div class="smiley-container">
-        <!-- Smiley -->
         <div class="smiley">
-    <span [ngClass]="getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
-      {{ getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) }}
-    </span>
+            <span [ngClass]="getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)">
+                {{ getMood(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value) }}
+            </span>
         </div>
 
-        <!-- Body -->
         <div class="body" [ngClass]="getBodyClass(gauges[0]?.value, gauges[1]?.value, gauges[2]?.value)"></div>
     </div>
-
-
 
     <!-- Gauges -->
     <div class="gauges">

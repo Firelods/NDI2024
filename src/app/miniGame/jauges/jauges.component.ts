@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgClass, NgForOf } from '@angular/common';
-import { GenericGaugeComponent } from './genericJauge/generic-gauge.component';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {NgClass, NgForOf, NgStyle} from '@angular/common';
+import {GenericGaugeComponent} from './genericJauge/generic-gauge.component';
 
 @Component({
     selector: 'app-jauges',
     standalone: true,
-    imports: [FormsModule, NgClass, GenericGaugeComponent, NgForOf],
+    imports: [FormsModule, NgClass, GenericGaugeComponent, NgForOf, NgStyle],
     templateUrl: './jauges.component.html',
     styleUrls: ['./jauges.component.scss'],
 })
@@ -14,14 +14,14 @@ export class JaugesComponent implements OnInit, OnDestroy {
     // Configurations for human and ocean gauges
     gaugeConfigurations = {
         human: [
-            { label: 'IMC', value: 18.5, min: 10, max: 50, unit: '' },
-            { label: 'Température', value: 36.6, min: 28, max: 41.1, unit: '°C' },
-            { label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm' },
+            {label: 'IMC', value: 18.5, min: 10, max: 50, unit: ''},
+            {label: 'Température', value: 36.6, min: 28, max: 41.1, unit: '°C'},
+            {label: 'Pouls', value: 60, min: 30, max: 200, unit: 'bpm'},
         ],
         ocean: [
-            { label: 'CO2', value: 400, min: 200, max: 500, unit: 'ppm' },
-            { label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L' },
-            { label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt' },
+            {label: 'CO2', value: 400, min: 200, max: 500, unit: 'ppm'},
+            {label: 'O2', value: 8, min: 5, max: 10, unit: 'mg/L'},
+            {label: 'NaCl', value: 35, min: 20, max: 50, unit: 'ppt'},
         ],
     };
 
@@ -44,6 +44,7 @@ export class JaugesComponent implements OnInit, OnDestroy {
         this.selectedType = type;
         this.gauges = this.gaugeConfigurations[type];
         this.updateClues(type);
+        this.backgroundImage();
     }
 
     updateClues(type: 'human' | 'ocean'): void {
@@ -181,4 +182,24 @@ export class JaugesComponent implements OnInit, OnDestroy {
             gauge.value = value;
         }
     }
+
+    backgroundImage() {
+        const html = document.getElementsByTagName('html')[0];
+        const body = document.body; // Get the body element
+        if (this.selectedType === 'ocean') {
+            html.style.backgroundImage = "url('jauge/ocean_background.jpg')";
+            body.classList.add('ocean');  // Add ocean-specific class
+            body.classList.remove('human');  // Remove human-specific class
+        } else {
+            html.style.backgroundImage = "url('jauge/human_background.jpg')";
+            body.classList.add('human');  // Add human-specific class
+            body.classList.remove('ocean');  // Remove ocean-specific class
+        }
+
+        html.style.backgroundPosition = 'center center';
+        html.style.backgroundRepeat = 'no-repeat';
+        html.style.backgroundSize = 'cover';
+        html.style.backgroundAttachment = 'fixed';
+    }
+
 }
